@@ -44,12 +44,12 @@
   };
 </script>
 
-  <meta name="description" content="学而不思则罔，思而不学则殆！">
+  <meta name="description" content="天行健，君子以自强不息！">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Ifonlybean">
 <meta property="og:url" content="https://ifonlybean.github.io/note/index.html">
 <meta property="og:site_name" content="Ifonlybean">
-<meta property="og:description" content="学而不思则罔，思而不学则殆！">
+<meta property="og:description" content="天行健，君子以自强不息！">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="Ifonlybean">
 <meta property="article:tag" content="前端 web开发 nodejs ifonlybean">
@@ -67,7 +67,7 @@
   };
 </script>
 
-  <title>Ifonlybean - 好好学习，天天向上！</title>
+  <title>Ifonlybean - 公众号：前端开发</title>
   
 
 
@@ -124,7 +124,7 @@
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-        <h1 class="site-subtitle" itemprop="description">好好学习，天天向上！</h1>
+        <h1 class="site-subtitle" itemprop="description">公众号：前端开发</h1>
       
   </div>
 
@@ -219,12 +219,12 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ifonlybean.github.io/note/2020/04/29/hello-world/">
+    <link itemprop="mainEntityOfPage" href="https://ifonlybean.github.io/note/2020/05/06/hexo-use/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/note/images/logo.jpg">
       <meta itemprop="name" content="Ifonlybean">
-      <meta itemprop="description" content="学而不思则罔，思而不学则殆！">
+      <meta itemprop="description" content="天行健，君子以自强不息！">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -233,7 +233,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/note/2020/04/29/hello-world/" class="post-title-link" itemprop="url">使用Hexo主题搭建个人github博客</a>
+            <a href="/note/2020/05/06/hexo-use/" class="post-title-link" itemprop="url">hexo-use</a>
         </h2>
 
         <div class="post-meta">
@@ -243,7 +243,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-04-29 17:05:49" itemprop="dateCreated datePublished" datetime="2020-04-29T17:05:49+08:00">2020-04-29</time>
+              <time title="创建时间：2020-05-06 16:02:39" itemprop="dateCreated datePublished" datetime="2020-05-06T16:02:39+08:00">2020-05-06</time>
             </span>
 
           
@@ -257,25 +257,83 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><p>首先在 github 上新建两个代码仓库，例如 blog 和 blog-origin 两个代码库，其中 blog 代码库是最终站点的代码，blog-origin 是基于hexo主题的源代码（当然也可以只建一个代码库，不过会比较混乱，在提交时也会有问题，因此还是建议分开两个代码库）</p>
-<p>说明：github 代码仓库的安装假装大家都会了，如有需要再补充~</p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="blog-origin代码库"><a href="#blog-origin代码库" class="headerlink" title="blog-origin代码库"></a>blog-origin代码库</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">// 1. 安装hexo</span><br><span class="line"><span class="meta">$</span><span class="bash"> npm i hexo-cli -g</span></span><br><span class="line"></span><br><span class="line">// 2. 安装完成之后校验是否成功安装hexo</span><br><span class="line"><span class="meta">$</span><span class="bash"> hexo -v</span></span><br><span class="line"></span><br><span class="line">// 3. 初始化项目</span><br><span class="line"><span class="meta">$</span><span class="bash"> hexo init</span></span><br><span class="line"></span><br><span class="line">// 4. 安装依赖</span><br><span class="line"><span class="meta">$</span><span class="bash"> npm i</span></span><br><span class="line"></span><br><span class="line">// 5. 安装扩展，主要作用是为了推送代码到github</span><br><span class="line"><span class="meta">$</span><span class="bash"> npm i hexo-deployer-git</span></span><br><span class="line"></span><br><span class="line">// 6. 修改_config.yml</span><br><span class="line">// 修改deploy的配置，改为你blog的github地址</span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: https://github.com/ifonlybean/blog</span><br><span class="line">  branch: master</span><br><span class="line"></span><br><span class="line">// 修改url和root配置</span><br><span class="line">url: https://ifonlybean.github.io/blog/</span><br><span class="line">root: /blog/</span><br><span class="line"></span><br><span class="line">// 7. 生成静态文件</span><br><span class="line"><span class="meta">$</span><span class="bash"> hexo g</span></span><br><span class="line"></span><br><span class="line">// 8. 本地预览站点效果</span><br><span class="line"><span class="meta">$</span><span class="bash"> hexo s</span></span><br><span class="line"></span><br><span class="line">// 9. 发布代码到github上（如果报错请检查是否执行了第 5 步）</span><br><span class="line"><span class="meta">$</span><span class="bash"> hexo d</span></span><br></pre></td></tr></table></figure>
+          
+      
+    </div>
 
-<p><strong>补充说明：</strong></p>
-<ul>
-<li><p>每次发布代码需要执行hexo g 和 hexo d 两个命令，比较麻烦，可以修改 package.json 文件增加自定义指令，例如修改 “deploy”: “hexo g &amp;&amp; hexo d”，这样修改完代码发布的时候只需要执行 npm run deploy 即可，可根据个人习惯自行修改设置；</p>
-</li>
-<li><p>如果推送完代码到github上没有生效，请强制刷新页面；</p>
-</li>
-</ul>
-<h3 id="blog代码库"><a href="#blog代码库" class="headerlink" title="blog代码库"></a>blog代码库</h3><ul>
-<li><p>代码：blog的代码是由blog-origin编译得来，通过hexo d的方式推送到github代码库中，不用手动处理~</p>
-</li>
-<li><p>设置：需要在 Settings 里 GitHub Pages里选择对应的分支就会得到默认的站点地址~</p>
-</li>
-</ul>
-<h2 id="更换Hexo主题"><a href="#更换Hexo主题" class="headerlink" title="更换Hexo主题"></a>更换Hexo主题</h2><p>当然了默认的主题确实不太好看，此时我们更换一个喜欢的主题吧~~</p>
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
 
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ifonlybean.github.io/note/2020/04/29/hexo-init/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/note/images/logo.jpg">
+      <meta itemprop="name" content="Ifonlybean">
+      <meta itemprop="description" content="天行健，君子以自强不息！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ifonlybean">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/note/2020/04/29/hexo-init/" class="post-title-link" itemprop="url">使用Hexo主题搭建个人github博客</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-29 17:05:49" itemprop="dateCreated datePublished" datetime="2020-04-29T17:05:49+08:00">2020-04-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/note/categories/%E5%BB%BA%E7%AB%99/" itemprop="url" rel="index">
+                    <span itemprop="name">建站</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>本文主要介绍了如何使用 Hexo 搭建属于自己的 github 博客，以及更换站点主题为 next；Hexo 常见配置；next 主题常见配置等等；如果觉得功能还不够强大，还可以参考文档里的链接，再根据自己的需求再进行配置；</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/note/2020/04/29/hexo-init/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -352,16 +410,28 @@
     <img class="site-author-image" itemprop="image" alt="Ifonlybean"
       src="/note/images/logo.jpg">
   <p class="site-author-name" itemprop="name">Ifonlybean</p>
-  <div class="site-description" itemprop="description">学而不思则罔，思而不学则殆！</div>
+  <div class="site-description" itemprop="description">天行健，君子以自强不息！</div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/note/archives/">
         
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">日志</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/note/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/note/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
