@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/note/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/note/images/favicon.png">
+
+<link rel="stylesheet" href="/note/css/main.css">
+
+
+<link rel="stylesheet" href="/note/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://ifonlybean.github.io/note').hostname,
+    root: '/note/',
+    scheme: 'Gemini',
+    version: '7.7.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="摘要本系列主要对vue实战过程中遇到的一些有意思的问题进行记录和分析，关于vue其他的API请参考官方文档~ 关于vue的响应式原理大家都已经比较了解了，以下整理了几个vue数据响应式的几个特殊之处以及误区。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【vue实战系列第一篇】vue数据响应式">
+<meta property="og:url" content="https://ifonlybean.github.io/note/2020/01/01/vue-define-reactive/index.html">
+<meta property="og:site_name" content="Ifonlybean">
+<meta property="og:description" content="摘要本系列主要对vue实战过程中遇到的一些有意思的问题进行记录和分析，关于vue其他的API请参考官方文档~ 关于vue的响应式原理大家都已经比较了解了，以下整理了几个vue数据响应式的几个特殊之处以及误区。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-12-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-05-22T03:28:53.030Z">
+<meta property="article:author" content="Ifonlybean">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="响应式">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ifonlybean.github.io/note/2020/01/01/vue-define-reactive/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>【vue实战系列第一篇】vue数据响应式 | Ifonlybean</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b759ac2a7fa45129e3ef060bf68259f0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/note/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ifonlybean</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">公众号：前端开发</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/note/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/note/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/note/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/note/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/note/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/ifonlybean" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ifonlybean.github.io/note/2020/01/01/vue-define-reactive/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/note/images/logo.jpg">
+      <meta itemprop="name" content="Ifonlybean">
+      <meta itemprop="description" content="天行健，君子以自强不息！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ifonlybean">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          【vue实战系列第一篇】vue数据响应式
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-01 00:00:00" itemprop="dateCreated datePublished" datetime="2020-01-01T00:00:00+08:00">2020-01-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/note/categories/vue/" itemprop="url" rel="index">
+                    <span itemprop="name">vue</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>本系列主要对<code>vue</code>实战过程中遇到的一些有意思的问题进行记录和分析，关于vue其他的API请参考官方文档~</p>
+<p>关于<code>vue</code>的响应式原理大家都已经比较了解了，以下整理了几个<code>vue</code>数据响应式的几个特殊之处以及误区。</p>
+<a id="more"></a>
+
+<h2 id="数组更新检测"><a href="#数组更新检测" class="headerlink" title="数组更新检测"></a>数组更新检测</h2><h3 id="问题一：vue为什么无法响应数组属性和length的变化"><a href="#问题一：vue为什么无法响应数组属性和length的变化" class="headerlink" title="问题一：vue为什么无法响应数组属性和length的变化"></a>问题一：<code>vue</code>为什么无法响应数组属性和<code>length</code>的变化</h3><p>我就不拿错误的答案来误导大家了（网上很多文章中关于这个问题的答案并不对，各种误导是js本身的问题），直接上正确答案：因为vue作者认为实现数组的响应式获得的收益与为此付出的性能代价不成正比。<a class="if-link" href="https://github.com/vuejs/vue/issues/8562" target="_blank">vue作者在github回答地址</a></p>
+<p>那问题来了，抛开<code>vue</code>自己的设计思路，<code>Object.defineProperties</code>到底能不能实现数组属性的变化呢？</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span>(<span class="params">obj, key, value</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">        <span class="keyword">get</span>: function() &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'get'</span>);</span><br><span class="line">            <span class="keyword">return</span> value;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="keyword">set</span>: function(val) &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'set'</span>);</span><br><span class="line">            value = val;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];</span><br><span class="line">arr.forEach(<span class="function">(<span class="params">item, index</span>) =&gt;</span> &#123;</span><br><span class="line">    defineReactive(arr, index, item);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">arr[<span class="number">0</span>];           <span class="comment">// get 1</span></span><br><span class="line">arr[<span class="number">0</span>] = <span class="number">5</span>;       <span class="comment">// set 5</span></span><br><span class="line">arr.length = <span class="number">10</span>;  <span class="comment">// 10</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>以上结果可以看出<code>Object.defineProperties</code>本身是可以检测到属性的变化，但是不能检测到<code>length</code>属性的变化；</p>
+</li>
+<li><p>以上问题<code>vue</code>的官方文档里有说明，对于以上属性、<code>length</code>变化的问题官网也给了答案<a class="if-link" href="https://cn.vuejs.org/v2/guide/reactivity.html#%E6%A3%80%E6%B5%8B%E5%8F%98%E5%8C%96%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9" target="_blank" rel="noopener">传送门</a></p>
+</li>
+<li><p><code>vue</code>中关于数组的<code>push</code>、<code>pop</code>、<code>shift</code>、<code>unshift</code>、<code>splice</code>、<code>sort</code>、<code>reverse</code>的 7 种方法做了特殊处理，可以实现响应式；具体实现是通过修改<code>Array</code>原型上的这 7 种方法，然后调用<code>notify</code>方法实现响应式，vue源码如下：</p>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/core/observer/array.js</span></span><br><span class="line"><span class="keyword">const</span> arrayProto = <span class="built_in">Array</span>.prototype;</span><br><span class="line"><span class="keyword">const</span> arrayMethods = <span class="built_in">Object</span>.create(arrayProto);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> methodsToPatch = [</span><br><span class="line">  <span class="string">'push'</span>,</span><br><span class="line">  <span class="string">'pop'</span>,</span><br><span class="line">  <span class="string">'shift'</span>,</span><br><span class="line">  <span class="string">'unshift'</span>,</span><br><span class="line">  <span class="string">'splice'</span>,</span><br><span class="line">  <span class="string">'sort'</span>,</span><br><span class="line">  <span class="string">'reverse'</span></span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Intercept mutating methods and emit events</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">methodsToPatch.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">method</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// cache original method</span></span><br><span class="line">  <span class="keyword">const</span> original = arrayProto[method];</span><br><span class="line">  def(arrayMethods, method, <span class="function"><span class="keyword">function</span> <span class="title">mutator</span> (<span class="params">...args</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> result = original.apply(<span class="keyword">this</span>, args);</span><br><span class="line">    <span class="keyword">const</span> ob = <span class="keyword">this</span>.__ob__;</span><br><span class="line">    <span class="keyword">let</span> inserted;</span><br><span class="line">    <span class="keyword">switch</span> (method) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'push'</span>:</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'unshift'</span>:</span><br><span class="line">        inserted = args;</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">      <span class="keyword">case</span> <span class="string">'splice'</span>:</span><br><span class="line">        inserted = args.slice(<span class="number">2</span>);</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (inserted) ob.observeArray(inserted);</span><br><span class="line">    <span class="comment">// notify change</span></span><br><span class="line">    ob.dep.notify();</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="问题二：只要是数组就无法响应式了吗？"><a href="#问题二：只要是数组就无法响应式了吗？" class="headerlink" title="问题二：只要是数组就无法响应式了吗？"></a>问题二：只要是数组就无法响应式了吗？</h3><ul>
+<li><code>vue</code>中关于实现数据响应式的关键点在<code>observe</code>方法，<code>observe</code>方法的作用就是给非<code>VNode</code>的对象类型数据添加一个<code>Observer</code>，如果已经添加过则直接返回，否则在满足一定条件下去实例化一个<code>Observer</code>对象实例，<code>observer</code>的源码如下：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Attempt to create an observer instance for a value,</span></span><br><span class="line"><span class="comment"> * returns the new observer if successfully observed,</span></span><br><span class="line"><span class="comment"> * or the existing observer if the value already has one.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">observe</span> (<span class="params">value: any, asRootData: ?boolean</span>): <span class="title">Observer</span> | <span class="title">void</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!isObject(value) || value <span class="keyword">instanceof</span> VNode) &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> ob: Observer | <span class="keyword">void</span></span><br><span class="line">  <span class="keyword">if</span> (hasOwn(value, <span class="string">'__ob__'</span>) &amp;&amp; value.__ob__ <span class="keyword">instanceof</span> Observer) &#123;</span><br><span class="line">    ob = value.__ob__</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (</span><br><span class="line">    shouldObserve &amp;&amp;</span><br><span class="line">    !isServerRendering() &amp;&amp;</span><br><span class="line">    (<span class="built_in">Array</span>.isArray(value) || isPlainObject(value)) &amp;&amp;</span><br><span class="line">    <span class="built_in">Object</span>.isExtensible(value) &amp;&amp;</span><br><span class="line">    !value._isVue</span><br><span class="line">  ) &#123;</span><br><span class="line">    ob = <span class="keyword">new</span> Observer(value)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (asRootData &amp;&amp; ob) &#123;</span><br><span class="line">    ob.vmCount++</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> ob</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>Observer</code>它的作用是给对象的属性添加<code>getter</code>和<code>setter</code>，用于依赖收集和派发更新，<code>vue</code>源码中关于<code>Observer</code>类的定义如下：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Observer class that is attached to each observed</span></span><br><span class="line"><span class="comment"> * object. Once attached, the observer converts the target</span></span><br><span class="line"><span class="comment"> * object's property keys into getter/setters that</span></span><br><span class="line"><span class="comment"> * collect dependencies and dispatch updates.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="class"><span class="keyword">class</span> <span class="title">Observer</span> </span>&#123;</span><br><span class="line">  value: any;</span><br><span class="line">  dep: Dep;</span><br><span class="line">  vmCount: number; <span class="comment">// number of vms that has this object as root $data</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">constructor</span> (value: any) &#123;</span><br><span class="line">    <span class="keyword">this</span>.value = value</span><br><span class="line">    <span class="keyword">this</span>.dep = <span class="keyword">new</span> Dep()</span><br><span class="line">    <span class="keyword">this</span>.vmCount = <span class="number">0</span></span><br><span class="line">    def(value, <span class="string">'__ob__'</span>, <span class="keyword">this</span>)</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(value)) &#123;</span><br><span class="line">      <span class="keyword">const</span> augment = hasProto</span><br><span class="line">        ? protoAugment</span><br><span class="line">        : copyAugment</span><br><span class="line">      augment(value, arrayMethods, arrayKeys)</span><br><span class="line">      <span class="keyword">this</span>.observeArray(value)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.walk(value)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Walk through each property and convert them into</span></span><br><span class="line"><span class="comment">   * getter/setters. This method should only be called when</span></span><br><span class="line"><span class="comment">   * value type is Object.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  walk (obj: <span class="built_in">Object</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> keys = <span class="built_in">Object</span>.keys(obj)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; keys.length; i++) &#123;</span><br><span class="line">      defineReactive(obj, keys[i])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Observe a list of Array items.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  observeArray (items: <span class="built_in">Array</span>&lt;any&gt;) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, l = items.length; i &lt; l; i++) &#123;</span><br><span class="line">      observe(items[i])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>从以上代码可以看出<code>Observer</code>中如果是数组类型的数据，会执行<code>observeArray</code>方法，该方法对数组的每一项继续执行<code>observe</code>方法，如果数组的每一项满足<code>(!isObject(value) || value instanceof VNode)</code>这个条件，就不会有响应式的效果，例如问题一中的<code>arr=[1,2,3]</code>，当改变<code>arr</code>的属性值时是不会触发响应式的，而如果<code>arr = [{value:1}, {value:2}, {value:3}]</code>，当改变<code>arr[0].value = 99</code>时是会触发响应式的；</p>
+</li>
+<li><p>所以对于数组类型的如果想要实现响应式，主要数组的每项满足<code>!isObject(value)</code>即可，<code>isObject</code>源码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Quick object check - this is primarily used to tell</span></span><br><span class="line"><span class="comment"> * Objects from primitive values when we know the value</span></span><br><span class="line"><span class="comment"> * is a JSON-compliant type.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isObject</span> (<span class="params">obj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> obj !== <span class="literal">null</span> &amp;&amp; <span class="keyword">typeof</span> obj === <span class="string">'object'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="问题三：数组还没有其他方式也可以触发响应式呢？"><a href="#问题三：数组还没有其他方式也可以触发响应式呢？" class="headerlink" title="问题三：数组还没有其他方式也可以触发响应式呢？"></a>问题三：数组还没有其他方式也可以触发响应式呢？</h3><p>事实上，除了以上所说的方法，直接对数组进行重新赋值也是可以触发响应式的，这又是为什么呢？</p>
+<p>因为直接对数组进行赋值实际上出发的是对应属性的<code>set</code>方法，我们来看一下响应式中<code>set</code>方法的源码部分：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">    enumerable: <span class="literal">true</span>,</span><br><span class="line">    configurable: <span class="literal">true</span>,</span><br><span class="line">    <span class="keyword">get</span>: function reactiveGetter () &#123;</span><br><span class="line">      <span class="keyword">var</span> value = getter ? getter.call(obj) : val;</span><br><span class="line">      <span class="keyword">if</span> (Dep.target) &#123;</span><br><span class="line">        dep.depend();</span><br><span class="line">        <span class="keyword">if</span> (childOb) &#123;</span><br><span class="line">          childOb.dep.depend();</span><br><span class="line">          <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(value)) &#123;</span><br><span class="line">            dependArray(value);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> value</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">set</span>: function reactiveSetter (newVal) &#123;</span><br><span class="line">      <span class="keyword">var</span> value = getter ? getter.call(obj) : val;</span><br><span class="line">      <span class="comment">/* eslint-disable no-self-compare */</span></span><br><span class="line">      <span class="keyword">if</span> (newVal === value || (newVal !== newVal &amp;&amp; value !== value)) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">/* eslint-enable no-self-compare */</span></span><br><span class="line">      <span class="keyword">if</span> (customSetter) &#123;</span><br><span class="line">        customSetter();</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// #7981: for accessor properties without setter</span></span><br><span class="line">      <span class="keyword">if</span> (getter &amp;&amp; !setter) &#123; <span class="keyword">return</span> &#125;</span><br><span class="line">      <span class="keyword">if</span> (setter) &#123;</span><br><span class="line">        setter.call(obj, newVal);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        val = newVal;</span><br><span class="line">      &#125;</span><br><span class="line">      childOb = !shallow &amp;&amp; observe(newVal);</span><br><span class="line">      dep.notify();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>从代码中可以看出，调用<code>set</code>方法（满足一定条件）会执行<code>dep.notify()</code>，即派发更新，因此是会触发响应式的；</p>
+<h3 id="实战考察"><a href="#实战考察" class="headerlink" title="实战考察"></a>实战考察</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> Arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">...</span><br><span class="line">data() &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        arr: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],</span><br><span class="line">        arr1: [&#123;<span class="attr">val</span>: <span class="number">1</span>&#125;, &#123;<span class="attr">val</span>: <span class="number">2</span>&#125;, &#123;<span class="attr">val</span>: <span class="number">3</span>&#125;],</span><br><span class="line">        arr3: Arr</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">methods: &#123;</span><br><span class="line">    test() &#123;</span><br><span class="line">        <span class="keyword">this</span>.arr[<span class="number">0</span>] = <span class="number">99</span>;         <span class="comment">// 不会 - 直接修改属性，且属性不满足isObject条件</span></span><br><span class="line">        <span class="keyword">this</span>.arr1[<span class="number">0</span>].val = <span class="number">99</span>;    <span class="comment">// 会 --- 直接修改属性，但属性满足isObject条件</span></span><br><span class="line">        <span class="keyword">this</span>.arr = [<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>];       <span class="comment">// 会 --- 重新赋值</span></span><br><span class="line">        <span class="keyword">this</span>.arr1 = [&#123;<span class="attr">val</span>: <span class="number">4</span>&#125;];   <span class="comment">// 会 --- 重新赋值</span></span><br><span class="line">        <span class="keyword">this</span>.arr.push(<span class="number">10</span>);        <span class="comment">// 会 --- 满足7种方法之一</span></span><br><span class="line">        <span class="keyword">this</span>.arr1.push(&#123;<span class="attr">val</span>: <span class="number">4</span>&#125;); <span class="comment">// 会 --- 满足7种方法之一</span></span><br><span class="line">        Arr[<span class="number">0</span>] = <span class="number">99</span>;              <span class="comment">// 不会 - 因为arr3存储的是Arr的地址，修改Arr属性值，arr3并未发生改变</span></span><br><span class="line">        Arr = [<span class="number">4</span>];                <span class="comment">// 不会 --- arr3很Arr存储的是同一个地址，Arr改变，但是arr3并未改变</span></span><br><span class="line">        Arr = [<span class="number">4</span>];<span class="keyword">this</span>.arr3 = Arr;<span class="comment">// 会 --- Arr地址改变，又对arr3重新赋值，因此会触发响应式</span></span><br><span class="line">        Arr.push(<span class="number">10</span>);             <span class="comment">// 会 --- 相当于arr3执行push</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ol>
+<li><p><code>Vue</code>不能检测以下数组值以及<code>length</code>的变化，这并不全是由于<code>Object.defineProperties</code>方法导致的，解决方案可以使用<code>vm.$set</code>或者<code>push</code>、<code>pop</code>、<code>shift</code>、<code>unshift</code>、<code>splice</code>、<code>sort</code>、<code>reverse</code>这7种方法解决；</p>
+</li>
+<li><p>如果数组的每项满足<code>isObject</code>的判断条件，也是可以响应式的；</p>
+</li>
+<li><p>直接对数组进行重新赋值也可以实现响应式；</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/note/tags/vue/" rel="tag"># vue</a>
+              <a href="/note/tags/%E5%93%8D%E5%BA%94%E5%BC%8F/" rel="tag"># 响应式</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/note/2019/01/02/npm/" rel="prev" title="npm、npx、nrm、nvm">
+      <i class="fa fa-chevron-left"></i> npm、npx、nrm、nvm
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/note/2020/01/02/vue-data-bus/" rel="next" title="【vue实战系列第一篇】vue数据通信">
+      【vue实战系列第一篇】vue数据通信 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81MDA3My8yNjU2NA=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数组更新检测"><span class="nav-number">2.</span> <span class="nav-text">数组更新检测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题一：vue为什么无法响应数组属性和length的变化"><span class="nav-number">2.1.</span> <span class="nav-text">问题一：vue为什么无法响应数组属性和length的变化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题二：只要是数组就无法响应式了吗？"><span class="nav-number">2.2.</span> <span class="nav-text">问题二：只要是数组就无法响应式了吗？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题三：数组还没有其他方式也可以触发响应式呢？"><span class="nav-number">2.3.</span> <span class="nav-text">问题三：数组还没有其他方式也可以触发响应式呢？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实战考察"><span class="nav-number">2.4.</span> <span class="nav-text">实战考察</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">2.5.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ifonlybean"
+      src="/note/images/logo.jpg">
+  <p class="site-author-name" itemprop="name">Ifonlybean</p>
+  <div class="site-description" itemprop="description">天行健，君子以自强不息！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/note/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/note/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/note/tags/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:ifonlybean@gmail.com" title="E-Mail → mailto:ifonlybean@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/ifonlybean" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ifonlybean" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ifonlybean</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">51k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">46 分钟</span>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/note/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/note/lib/anime.min.js"></script>
+  <script src="/note/lib/velocity/velocity.min.js"></script>
+  <script src="/note/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/note/js/utils.js"></script>
+
+<script src="/note/js/motion.js"></script>
+
+
+<script src="/note/js/schemes/pisces.js"></script>
+
+
+<script src="/note/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/note/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/note/lib/needsharebutton/needsharebutton.css">
+
+  
+  
+  <script src="/note/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "bottomCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "box";
+      
+          flOptions.boxForm = "horizontal";
+      
+          flOptions.position = "topRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script>
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  // window.livereOptions = {
+  //   refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  // };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

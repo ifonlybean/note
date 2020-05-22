@@ -1228,7 +1228,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ffff8f;
+  background: #4b4167;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2795,4 +2795,11 @@ ul.breadcrumb li + li:last-child {
   .pagination {
     margin: 8px 0 0;
   }
+}
+.if-link {
+  color: #0366d6;
+  border-bottom: none;
+}
+.if-link:hover {
+  color: #0366d6;
 }
