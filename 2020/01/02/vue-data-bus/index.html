@@ -58,7 +58,7 @@
 <meta property="og:image" content="https://ifonlybean.github.io/note/2020/01/02/vue-data-bus/attr-listener.png">
 <meta property="og:image" content="https://ifonlybean.github.io/note/2020/01/02/vue-data-bus/provider-inject.png">
 <meta property="article:published_time" content="2020-01-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-05-27T11:54:46.750Z">
+<meta property="article:modified_time" content="2020-05-27T11:56:35.898Z">
 <meta property="article:author" content="Ifonlybean">
 <meta property="article:tag" content="vue">
 <meta property="article:tag" content="数据通信">
@@ -302,7 +302,7 @@
 <a id="more"></a>
 
 <h2 id="一、props-emit适用父子组件通信"><a href="#一、props-emit适用父子组件通信" class="headerlink" title="一、props/$emit适用父子组件通信"></a>一、<code>props/$emit</code>适用父子组件通信</h2><p>这种方式的写法是比较常见，子组件通过<code>props</code>接受父组件传递的参数，同时子组件在对父组件传递过来的数据进行处理时，需要通过<code>this.$emit(&#39;method-name&#39;, params)</code>的方式进行处理。</p>
-<p><a class="if-link" href="https://cn.vuejs.org/v2/api/#vm-emit" target="_blank">示例代码</a></p>
+<p><a class="if-link" href="https://cn.vuejs.org/v2/api/#vm-emit" target="_blank">vue官方示例代码</a></p>
 <h2 id="二、-refs与-parent-children适用父子组件通信"><a href="#二、-refs与-parent-children适用父子组件通信" class="headerlink" title="二、$refs与$parent/$children适用父子组件通信"></a>二、<code>$refs</code>与<code>$parent/$children</code>适用父子组件通信</h2><ul>
 <li><p><code>$refs</code>：我们可以通过<code>ref</code>这个<code>attribute</code>为子组件赋予一个<code>ID</code>引用，然后可以通过<code>this.$refs.idname</code>来访问子组件实例，特别注意最早可以在父组件的<code>mounted</code>生命周期里进行调用；（PS：如果在普通的<code>DOM</code>元素上使用，引用指向的就是<code>DOM</code>元素；）</p>
 </li>
