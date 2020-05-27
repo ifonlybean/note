@@ -44,19 +44,26 @@
   };
 </script>
 
-  <meta name="description" content="天行健，君子以自强不息！">
+  <meta name="description" content="摘要本篇文章主要介绍了vue中的几种通信方式。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【vue实战系列第二篇】vue数据通信">
 <meta property="og:url" content="https://ifonlybean.github.io/note/2020/01/02/vue-data-bus/index.html">
 <meta property="og:site_name" content="Ifonlybean">
-<meta property="og:description" content="天行健，君子以自强不息！">
+<meta property="og:description" content="摘要本篇文章主要介绍了vue中的几种通信方式。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ifonlybean.github.io/note/2020/01/02/vue-data-bus/event-bus-normal.png">
+<meta property="og:image" content="https://ifonlybean.github.io/note/2020/01/02/vue-data-bus/event-bus-normal-res.png">
+<meta property="og:image" content="https://ifonlybean.github.io/note/2020/01/02/vue-data-bus/event-bus-g.png">
+<meta property="og:image" content="https://ifonlybean.github.io/note/2020/01/02/vue-data-bus/attrs.png">
+<meta property="og:image" content="https://ifonlybean.github.io/note/2020/01/02/vue-data-bus/attr-listener.png">
+<meta property="og:image" content="https://ifonlybean.github.io/note/2020/01/02/vue-data-bus/provider-inject.png">
 <meta property="article:published_time" content="2020-01-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-05-22T03:38:34.565Z">
+<meta property="article:modified_time" content="2020-05-27T11:54:46.750Z">
 <meta property="article:author" content="Ifonlybean">
 <meta property="article:tag" content="vue">
 <meta property="article:tag" content="数据通信">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ifonlybean.github.io/note/2020/01/02/vue-data-bus/event-bus-normal.png">
 
 <link rel="canonical" href="https://ifonlybean.github.io/note/2020/01/02/vue-data-bus/">
 
@@ -272,14 +279,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>0</span>
+              <span>2.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -291,7 +298,47 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        
+        <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>本篇文章主要介绍了<code>vue</code>中的几种通信方式。</p>
+<a id="more"></a>
+
+<h2 id="一、props-emit适用父子组件通信"><a href="#一、props-emit适用父子组件通信" class="headerlink" title="一、props/$emit适用父子组件通信"></a>一、<code>props/$emit</code>适用父子组件通信</h2><p>这种方式的写法是比较常见，子组件通过<code>props</code>接受父组件传递的参数，同时子组件在对父组件传递过来的数据进行处理时，需要通过<code>this.$emit(&#39;method-name&#39;, params)</code>的方式进行处理。</p>
+<p><a class="if-link" href="https://cn.vuejs.org/v2/api/#vm-emit" target="_blank">示例代码</a></p>
+<h2 id="二、-refs与-parent-children适用父子组件通信"><a href="#二、-refs与-parent-children适用父子组件通信" class="headerlink" title="二、$refs与$parent/$children适用父子组件通信"></a>二、<code>$refs</code>与<code>$parent/$children</code>适用父子组件通信</h2><ul>
+<li><p><code>$refs</code>：我们可以通过<code>ref</code>这个<code>attribute</code>为子组件赋予一个<code>ID</code>引用，然后可以通过<code>this.$refs.idname</code>来访问子组件实例，特别注意最早可以在父组件的<code>mounted</code>生命周期里进行调用；（PS：如果在普通的<code>DOM</code>元素上使用，引用指向的就是<code>DOM</code>元素；）</p>
+</li>
+<li><p><code>$parent/$children</code>：我们通过<code>this.$parent</code>以及<code>this.$children</code>（数组）可以直接获取到对应的父组件和子组件（在当前页面有实际调用的组件）；（PS：根组件的<code>this.$parent</code>是<code>undefined</code>；）</p>
+</li>
+</ul>
+<h2 id="三、EventBus适用于父子、隔代、兄弟组件通信"><a href="#三、EventBus适用于父子、隔代、兄弟组件通信" class="headerlink" title="三、EventBus适用于父子、隔代、兄弟组件通信"></a>三、<code>EventBus</code>适用于父子、隔代、兄弟组件通信</h2><p><code>EventBus</code>又称为事件总线，在<code>Vue</code>中可以使用<code>EventBus</code>来作为所有组件公共的事件中心，可以向该中心注册发送事件或接收事件，所以组件都可以上下平行地通知其他组件。</p>
+<h3 id="非全局事件总线"><a href="#非全局事件总线" class="headerlink" title="非全局事件总线"></a>非全局事件总线</h3><p>我们可以单独建一个<code>eventBus.js</code>文件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// eventBus.js</span></span><br><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> EventBus = <span class="keyword">new</span> Vue();</span><br></pre></td></tr></table></figure>
+<p>然后我们在需要通信的组件中引入<code>import { EventBus } from &quot;eventBus.js&quot;;</code>，然后就可以通过<code>EventBus.$emit</code>和<code>EventBus.$on</code>来发送和接受事件。</p>
+<p><img src="event-bus-normal.png" alt=""></p>
+<p>此时点击A组件的按钮，控制台会打印对应的数据；</p>
+<p><img src="event-bus-normal-res.png" alt=""></p>
+<h3 id="全局事件总线"><a href="#全局事件总线" class="headerlink" title="全局事件总线"></a>全局事件总线</h3><p>除了上述可以创建一个<code>EventBus.js</code>来实现中转外，我们还可以在<code>main.js</code>中注册一个全局的事件总线：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main.js</span></span><br><span class="line">Vue.prototype.$EventBus = <span class="keyword">new</span> Vue();</span><br></pre></td></tr></table></figure>
+<p>我们在<code>Vue</code>的原型上增加了一个<code>$EventBus</code>属性，因此我们可以在任何的组件中访问到该参数，在需要通信的组件中直接执行<code>this.$EventBus.$emit(&#39;method-name&#39;, params)</code>发送事件，在需要接收事件的地方通过<code>this.$EventBus.$on(&#39;method-name&#39;, params =&gt; {})</code>即可对事件进行处理；</p>
+<p><img src="event-bus-g.png" alt=""></p>
+<h2 id="四、-attrs-listeners适用于隔代组件通信"><a href="#四、-attrs-listeners适用于隔代组件通信" class="headerlink" title="四、$attrs/$listeners适用于隔代组件通信"></a>四、<code>$attrs</code>/<code>$listeners</code>适用于隔代组件通信</h2><h3 id="attrs"><a href="#attrs" class="headerlink" title="$attrs"></a><code>$attrs</code></h3><p><code>$attrs</code>包含了父作用域中不被<code>prop</code>所识别（且获取）的特性绑定（<code>class</code>和<code>style</code>除外）。当一个组件没有声明任何<code>prop</code>时，这里会包含所有父作用域的绑定（<code>class</code>和<code>style</code>除外），并且可以通过<code>v-bind=&quot;$attrs&quot;</code>传入内部组件。通常配合<code>inheritAttrs</code>选项一起使用。</p>
+<p>-</p>
+<p>父组件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 父组件</span></span><br><span class="line">&lt;componentA <span class="class"><span class="keyword">class</span></span>=<span class="string">"component-wrap"</span> style=<span class="string">"color:red;"</span> data-name=<span class="string">"Tom"</span> data-color=<span class="string">"red"</span> data-title=<span class="string">"hello"</span> msg=<span class="string">"我是父组件传递的数据"</span> /&gt;</span><br></pre></td></tr></table></figure>
+<p>子组件：<code>componentA</code>子组件中<code>props</code>中假如只设置了<code>msg</code>，在<code>componentA</code>组件中打印：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.$attrs   <span class="comment">// &#123;data-name: "Tom", data-color: "red", data-title: "hello"&#125;</span></span><br></pre></td></tr></table></figure>
+<p>其中<code>class</code>和<code>style</code>部分会与子组件最外层的标签的<code>class</code>和<code>style</code>进行合并；</p>
+<p><img src="attrs.png" alt=""></p>
+<p><b>如果你不希望组件的根元素继承<code>attribute</code>，你可以在组件的选项中设置<code>inheritAttrs: false</code>。这个时候子组件的模板部分则不会有<code>data-name</code>、<code>data-color</code>、<code>data-title</code>；但是依然会保留<code>class</code>和<code>style</code>部分；</b></p>
+<h3 id="listeners"><a href="#listeners" class="headerlink" title="$listeners"></a><code>$listeners</code></h3><p><code>$listeners</code>包含了父作用域中的（不含<code>.native</code>修饰器的）<code>v-on</code>事件监听器。它可以通过<code>v-on=&quot;$listeners&quot;</code>传入内部组件；</p>
+<p><b>使用场景多用在对第三方组件进行封装时，如果组件本身具有很多的<code>props</code>和通过<code>$emit</code>触发的事件，则可以通过<code>$attrs</code>和<code>$listeners</code>轻松解决；在多级嵌套组件中也很适合，不用将<code>props</code>一层一层往上传递。</b></p>
+<p><img src="attr-listener.png" alt=""></p>
+<h2 id="五、provide-inject适用于隔代组件通信"><a href="#五、provide-inject适用于隔代组件通信" class="headerlink" title="五、provide/inject适用于隔代组件通信"></a>五、<code>provide/inject</code>适用于隔代组件通信</h2><blockquote>
+<p><code>provide</code>和<code>inject</code>主要在开发高阶插件/组件库时使用。并不推荐用于普通应用程序代码中。</p>
+</blockquote>
+<p>Vue2.2.0新增API,这对选项需要一起使用，以允许一个祖先组件向其所有子孙后代注入一个依赖，不论组件层次有多深，并在起上下游关系成立的时间里始终生效。一言而蔽之：祖先组件中通过<code>provider</code>来提供变量，然后在子孙组件中通过<code>inject</code>来注入变量。<code>provide</code> / <code>inject</code> API 主要解决了跨级组件间的通信问题，不过它的使用场景，主要是子组件获取上级组件的状态，跨级组件间建立了一种主动提供与依赖注入的关系。</p>
+<p><img src="provider-inject.png" alt=""></p>
+<h2 id="六、vuex适用于父子、隔代、兄弟组件通信"><a href="#六、vuex适用于父子、隔代、兄弟组件通信" class="headerlink" title="六、vuex适用于父子、隔代、兄弟组件通信"></a>六、<code>vuex</code>适用于父子、隔代、兄弟组件通信</h2><p><code>vuex</code>就不再多做解释了。</p>
+
     </div>
 
     
@@ -381,6 +428,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、props-emit适用父子组件通信"><span class="nav-number">2.</span> <span class="nav-text">一、props&#x2F;$emit适用父子组件通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、-refs与-parent-children适用父子组件通信"><span class="nav-number">3.</span> <span class="nav-text">二、$refs与$parent&#x2F;$children适用父子组件通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、EventBus适用于父子、隔代、兄弟组件通信"><span class="nav-number">4.</span> <span class="nav-text">三、EventBus适用于父子、隔代、兄弟组件通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#非全局事件总线"><span class="nav-number">4.1.</span> <span class="nav-text">非全局事件总线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#全局事件总线"><span class="nav-number">4.2.</span> <span class="nav-text">全局事件总线</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、-attrs-listeners适用于隔代组件通信"><span class="nav-number">5.</span> <span class="nav-text">四、$attrs&#x2F;$listeners适用于隔代组件通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#attrs"><span class="nav-number">5.1.</span> <span class="nav-text">$attrs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#listeners"><span class="nav-number">5.2.</span> <span class="nav-text">$listeners</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、provide-inject适用于隔代组件通信"><span class="nav-number">6.</span> <span class="nav-text">五、provide&#x2F;inject适用于隔代组件通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六、vuex适用于父子、隔代、兄弟组件通信"><span class="nav-number">7.</span> <span class="nav-text">六、vuex适用于父子、隔代、兄弟组件通信</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -449,12 +497,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">51k</span>
+    <span title="站点总字数">53k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">46 分钟</span>
+    <span title="站点阅读时长">48 分钟</span>
 </div>
 
 
