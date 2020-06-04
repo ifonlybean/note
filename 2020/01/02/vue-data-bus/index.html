@@ -58,7 +58,7 @@
 <meta property="og:image" content="https://ifonlybean.github.io/note/2020/01/02/vue-data-bus/attr-listener.png">
 <meta property="og:image" content="https://ifonlybean.github.io/note/2020/01/02/vue-data-bus/provider-inject.png">
 <meta property="article:published_time" content="2020-01-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-05-27T11:56:35.898Z">
+<meta property="article:modified_time" content="2020-06-01T06:43:19.656Z">
 <meta property="article:author" content="Ifonlybean">
 <meta property="article:tag" content="vue">
 <meta property="article:tag" content="数据通信">
@@ -279,7 +279,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.2k</span>
+              <span>2.4k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -309,6 +309,7 @@
 <li><p><code>$parent/$children</code>：我们通过<code>this.$parent</code>以及<code>this.$children</code>（数组）可以直接获取到对应的父组件和子组件（在当前页面有实际调用的组件）；（PS：根组件的<code>this.$parent</code>是<code>undefined</code>；）</p>
 </li>
 </ul>
+<p><strong>分析：</strong><code>$children</code>无法确定子组件的顺序，也不是响应式的；如果要访问确切的子组件建议使用$refs。</p>
 <h2 id="三、EventBus适用于父子、隔代、兄弟组件通信"><a href="#三、EventBus适用于父子、隔代、兄弟组件通信" class="headerlink" title="三、EventBus适用于父子、隔代、兄弟组件通信"></a>三、<code>EventBus</code>适用于父子、隔代、兄弟组件通信</h2><p><code>EventBus</code>又称为事件总线，在<code>Vue</code>中可以使用<code>EventBus</code>来作为所有组件公共的事件中心，可以向该中心注册发送事件或接收事件，所以组件都可以上下平行地通知其他组件。</p>
 <h3 id="非全局事件总线"><a href="#非全局事件总线" class="headerlink" title="非全局事件总线"></a>非全局事件总线</h3><p>我们可以单独建一个<code>eventBus.js</code>文件：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// eventBus.js</span></span><br><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> EventBus = <span class="keyword">new</span> Vue();</span><br></pre></td></tr></table></figure>
@@ -321,7 +322,6 @@
 <p>我们在<code>Vue</code>的原型上增加了一个<code>$EventBus</code>属性，因此我们可以在任何的组件中访问到该参数，在需要通信的组件中直接执行<code>this.$EventBus.$emit(&#39;method-name&#39;, params)</code>发送事件，在需要接收事件的地方通过<code>this.$EventBus.$on(&#39;method-name&#39;, params =&gt; {})</code>即可对事件进行处理；</p>
 <p><img src="event-bus-g.png" alt=""></p>
 <h2 id="四、-attrs-listeners适用于隔代组件通信"><a href="#四、-attrs-listeners适用于隔代组件通信" class="headerlink" title="四、$attrs/$listeners适用于隔代组件通信"></a>四、<code>$attrs</code>/<code>$listeners</code>适用于隔代组件通信</h2><h3 id="attrs"><a href="#attrs" class="headerlink" title="$attrs"></a><code>$attrs</code></h3><p><code>$attrs</code>包含了父作用域中不被<code>prop</code>所识别（且获取）的特性绑定（<code>class</code>和<code>style</code>除外）。当一个组件没有声明任何<code>prop</code>时，这里会包含所有父作用域的绑定（<code>class</code>和<code>style</code>除外），并且可以通过<code>v-bind=&quot;$attrs&quot;</code>传入内部组件。通常配合<code>inheritAttrs</code>选项一起使用。</p>
-<p>-</p>
 <p>父组件：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 父组件</span></span><br><span class="line">&lt;componentA <span class="class"><span class="keyword">class</span></span>=<span class="string">"component-wrap"</span> style=<span class="string">"color:red;"</span> data-name=<span class="string">"Tom"</span> data-color=<span class="string">"red"</span> data-title=<span class="string">"hello"</span> msg=<span class="string">"我是父组件传递的数据"</span> /&gt;</span><br></pre></td></tr></table></figure>
 <p>子组件：<code>componentA</code>子组件中<code>props</code>中假如只设置了<code>msg</code>，在<code>componentA</code>组件中打印：</p>
@@ -337,7 +337,8 @@
 </blockquote>
 <p>Vue2.2.0新增API,这对选项需要一起使用，以允许一个祖先组件向其所有子孙后代注入一个依赖，不论组件层次有多深，并在起上下游关系成立的时间里始终生效。一言而蔽之：祖先组件中通过<code>provider</code>来提供变量，然后在子孙组件中通过<code>inject</code>来注入变量。<code>provide</code> / <code>inject</code> API 主要解决了跨级组件间的通信问题，不过它的使用场景，主要是子组件获取上级组件的状态，跨级组件间建立了一种主动提供与依赖注入的关系。</p>
 <p><img src="provider-inject.png" alt=""></p>
-<h2 id="六、vuex适用于父子、隔代、兄弟组件通信"><a href="#六、vuex适用于父子、隔代、兄弟组件通信" class="headerlink" title="六、vuex适用于父子、隔代、兄弟组件通信"></a>六、<code>vuex</code>适用于父子、隔代、兄弟组件通信</h2><p><code>vuex</code>就不再多做解释了。</p>
+<p><b>需要注意的是：<code>provide</code>和<code>inject</code>绑定并不是可响应的。然而，如果你传入了一个可监听的对象，那么其对象的属性还是可响应的。例如上图中的<code>obj</code>变更的时候，A1组件里是可以响应式的。</b></p>
+<h2 id="六、vuex适用于父子、隔代、兄弟组件通信"><a href="#六、vuex适用于父子、隔代、兄弟组件通信" class="headerlink" title="六、vuex适用于父子、隔代、兄弟组件通信"></a>六、<code>vuex</code>适用于父子、隔代、兄弟组件通信</h2><p><code>vuex</code>就不再多做解释了。<a href="./vuex-origin.md">vuex实现原理参考这篇文档-vuex源码分析</a></p>
 
     </div>
 
@@ -361,8 +362,8 @@
       <i class="fa fa-chevron-left"></i> 【vue实战系列第一篇】vue数据响应式
     </a></div>
       <div class="post-nav-item">
-    <a href="/note/2020/03/01/vue-cli/" rel="next" title="【vue源码系列第一篇】vue文件编译之vue-cli分析">
-      【vue源码系列第一篇】vue文件编译之vue-cli分析 <i class="fa fa-chevron-right"></i>
+    <a href="/note/2020/01/03/vue-keep-alive/" rel="next" title="【vue实战系列第三篇】keep-alive">
+      【vue实战系列第三篇】keep-alive <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -444,20 +445,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/note/archives/">
         
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/note/categories/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/note/tags/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -497,12 +498,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">53k</span>
+    <span title="站点总字数">56k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">48 分钟</span>
+    <span title="站点阅读时长">51 分钟</span>
 </div>
 
 
