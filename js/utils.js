@@ -58,11 +58,35 @@ NexT.utils = {
    * One-click copy code support.
    */
   registerCopyCode: function() {
+    function createToast(result) {
+      let toast = document.createElement('div');
+      toast.className = 'user-toast-wrap';
+      let div = document.createElement('div');
+      div.className = 'user-toast';
+      let span = document.createElement('span');
+      span.innerText = result ? '复制成功' : '复制失败';
+      div.append(span);
+      toast.append(div);
+      toast.style.marginTop = '-20px';
+      document.querySelector('#copyContainer').appendChild(toast);
+
+      setTimeout(() => {
+        toast.className = 'user-toast-wrap default';
+        toast.style.marginTop = 0;
+      }, 0);
+      var toastTimer = setTimeout(() => {
+        toast.className = 'user-toast-wrap';
+        toast.style.marginTop = '-20px';
+        setTimeout(() => {
+          document.querySelector('#copyContainer').removeChild(toast);
+        }, 400);
+      }, 2000);
+    }
     document.querySelectorAll('figure.highlight').forEach(element => {
       const box = document.createElement('div');
       element.wrap(box);
       box.classList.add('highlight-container');
-      box.insertAdjacentHTML('beforeend', '<div class="copy-btn"><i class="fa fa-clipboard"></i></div>');
+      box.insertAdjacentHTML('beforeend', '<div class="copy-btn"><span class="copy-clipboard">复制代码</span></div>');
       var button = element.parentNode.querySelector('.copy-btn');
       button.addEventListener('click', event => {
         var target = event.currentTarget;
@@ -81,7 +105,8 @@ NexT.utils = {
         ta.readOnly = false;
         var result = document.execCommand('copy');
         if (CONFIG.copycode.show_result) {
-          target.querySelector('i').className = result ? 'fa fa-check' : 'fa fa-times';
+          createToast(result);
+          // target.querySelector('i').className = result ? 'fa fa-check' : 'fa fa-times';
         }
         ta.blur(); // For iOS
         target.blur();
@@ -91,11 +116,11 @@ NexT.utils = {
         }
         document.body.removeChild(ta);
       });
-      button.addEventListener('mouseleave', event => {
-        setTimeout(() => {
-          event.target.querySelector('i').className = 'fa fa-clipboard';
-        }, 300);
-      });
+      // button.addEventListener('mouseleave', event => {
+      //   setTimeout(() => {
+      //     event.target.querySelector('i').className = 'fa fa-clipboard';
+      //   }, 300);
+      // });
     });
   },
 
