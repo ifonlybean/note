@@ -1252,7 +1252,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff9ae4;
+  background: #9e04ff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2901,4 +2901,31 @@ tbody tr:hover {
   border: 1px solid #666;
   background: #666;
   color: #fff;
+}
+.tip {
+  padding: 15px 20px;
+  border-left-width: 5px;
+  border-left-style: solid;
+  margin: 10px 0;
+  font-size: 16px;
+}
+.tip h1 {
+  border-bottom: none;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+}
+.tip.success {
+  background-color: #f3f5f7;
+  border-color: #42b983;
+}
+.tip.warning {
+  background-color: rgba(255,229,100,0.3);
+  border-color: #e7c000;
+  color: #6b5900;
+}
+.tip.error {
+  background-color: #ffe6e6;
+  border-color: #c00;
+  color: #4d0000;
 }
