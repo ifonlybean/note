@@ -1252,7 +1252,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff79cb;
+  background: #05ffff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2830,17 +2830,32 @@ ul.breadcrumb li + li:last-child {
     margin: 8px 0 0;
   }
 }
+body {
+  font-size: 15px;
+}
+code {
+  font-size: 14px;
+  margin: 0 2px;
+}
+blockquote {
+  background: #f0f0f0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+blockquote p:last-child {
+  margin-bottom: 0;
+}
 .if-link {
   color: #0366d6;
-  border-bottom: none;
+  border-bottom: 1px solid #0366d6;
 }
 .if-link:hover {
   color: #0366d6;
 }
 .table-container {
   max-height: 800px;
-  padding-top: 16px;
-  padding-bottom: 16px;
+  padding-top: 8px;
+  padding-bottom: 8px;
   font-size: 16px;
 }
 tbody tr:hover {
