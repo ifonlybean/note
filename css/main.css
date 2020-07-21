@@ -1276,7 +1276,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #e462ff;
+  background: #ffff6b;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -1516,7 +1516,7 @@ pre .javascript .function {
   }
 }
 .with-love {
-  color: #808080;
+  color: #ff0000;
   display: inline-block;
   margin: 0 5px;
 }
@@ -2850,6 +2850,9 @@ tbody tr:hover {
   background-color: #ffe6e6;
   border-color: #c00;
   color: #4d0000;
+}
+.tip .content p:first-child {
+  margin-bottom: 0;
 }
 .site-state {
   flex-direction: column;

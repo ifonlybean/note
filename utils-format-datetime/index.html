@@ -44,21 +44,21 @@
   };
 </script>
 
-  <meta name="description" content="document.querySelectorAll(&#39;.github-emoji-test&#39;)           .forEach(el &#x3D;&gt; {             if (!el.dataset.src) { return; }             const img &#x3D; document.createElement(&#39;img&#39;);             img.">
+  <meta name="description" content="背景本系列主要在于整理一些项目中比较常用的功能，通常toC的产品在代码上的要求会比较高，一般考虑到代码大小、安全性、项目特点（例如只需要处理指定场景的case）、就喜欢自己写代码 😏 等方面都会自主开发一些常用的基础库，如果需要比较复杂的、兼容性等要求更高、toB等场景，还是建议使用npm依赖。以上只是我的一点点想法，轻拍😂 😂 😂">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【vue实战系列第四篇】vuex-router源码分析">
-<meta property="og:url" content="https://ifonlybean.github.io/note/vue-router-origin/index.html">
+<meta property="og:title" content="【手写基础库系列】时间格式化">
+<meta property="og:url" content="https://ifonlybean.github.io/note/utils-format-datetime/index.html">
 <meta property="og:site_name" content="Ifonlybean">
-<meta property="og:description" content="document.querySelectorAll(&#39;.github-emoji-test&#39;)           .forEach(el &#x3D;&gt; {             if (!el.dataset.src) { return; }             const img &#x3D; document.createElement(&#39;img&#39;);             img.">
+<meta property="og:description" content="背景本系列主要在于整理一些项目中比较常用的功能，通常toC的产品在代码上的要求会比较高，一般考虑到代码大小、安全性、项目特点（例如只需要处理指定场景的case）、就喜欢自己写代码 😏 等方面都会自主开发一些常用的基础库，如果需要比较复杂的、兼容性等要求更高、toB等场景，还是建议使用npm依赖。以上只是我的一点点想法，轻拍😂 😂 😂">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-01-03T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-07-16T09:20:58.309Z">
+<meta property="article:published_time" content="2019-03-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-07-21T06:30:03.969Z">
 <meta property="article:author" content="Ifonlybean">
-<meta property="article:tag" content="vue">
-<meta property="article:tag" content="vuex">
+<meta property="article:tag" content="js">
+<meta property="article:tag" content="utils">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://ifonlybean.github.io/note/vue-router-origin/">
+<link rel="canonical" href="https://ifonlybean.github.io/note/utils-format-datetime/">
 
 
 <script id="page-configurations">
@@ -70,7 +70,7 @@
   };
 </script>
 
-  <title>【vue实战系列第四篇】vuex-router源码分析 | Ifonlybean</title>
+  <title>【手写基础库系列】时间格式化 | Ifonlybean</title>
   
 
 
@@ -185,7 +185,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ifonlybean.github.io/note/vue-router-origin/">
+    <link itemprop="mainEntityOfPage" href="https://ifonlybean.github.io/note/utils-format-datetime/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/note/images/logo.jpg">
@@ -198,7 +198,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          【vue实战系列第四篇】vuex-router源码分析
+          【手写基础库系列】时间格式化
         </h2>
 
         <div class="post-meta">
@@ -208,7 +208,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-01-04 00:00:00" itemprop="dateCreated datePublished" datetime="2020-01-04T00:00:00+08:00">2020-01-04</time>
+              <time title="创建时间：2019-04-01 00:00:00" itemprop="dateCreated datePublished" datetime="2019-04-01T00:00:00+08:00">2019-04-01</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -216,8 +216,8 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/note/categories/Vue/" itemprop="url" rel="index">
-                    <span itemprop="name">Vue</span>
+                  <a href="/note/categories/JS%E5%9F%BA%E7%A1%80%E5%BA%93/" itemprop="url" rel="index">
+                    <span itemprop="name">JS基础库</span>
                   </a>
                 </span>
             </span>
@@ -235,7 +235,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>0</span>
+              <span>1.3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -254,7 +254,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <script>
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>本系列主要在于整理一些项目中比较常用的功能，通常<code>toC</code>的产品在代码上的要求会比较高，一般考虑到代码大小、安全性、项目特点（例如只需要处理指定场景的<code>case</code>）、就喜欢自己写代码 😏 等方面都会自主开发一些常用的基础库，如果需要比较复杂的、兼容性等要求更高、<code>toB</code>等场景，还是建议使用<code>npm</code>依赖。以上只是我的一点点想法，轻拍<span class="github-emoji-test" style="background-image:none !important;color:inherit !important;color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8">😂</span> <span class="github-emoji-test" style="background-image:none !important;color:inherit !important;color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8">😂</span> <span class="github-emoji-test" style="background-image:none !important;color:inherit !important;color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8">😂</span></p>
+<a id="more"></a>
+
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 格式化日期时间</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param  <span class="type">{number}</span> </span>timestamp 待格式化的时间戳，单位毫秒</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param  <span class="type">{string}</span> </span>format    日期时间格式，如："yyyy/m/d h:i:s"，默认为 "yyyy/mm/dd"</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">{string}</span>           </span>格式化后的日期时间</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">formatDateTime</span>(<span class="params">timestamp, format = <span class="string">'yyyy/mm/dd'</span></span>) </span>{</span><br><span class="line">    <span class="comment">// 非"数字"特殊处理</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">isNaN</span>(timestamp)) {</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    }</span><br><span class="line">    format = format.toLowerCase();</span><br><span class="line">    <span class="keyword">let</span> date = <span class="keyword">new</span> <span class="built_in">Date</span>(timestamp);</span><br><span class="line">    <span class="keyword">let</span> map = {</span><br><span class="line">        <span class="string">'m+'</span>: date.getMonth() + <span class="number">1</span>,    <span class="comment">// 月</span></span><br><span class="line">        <span class="string">'d+'</span>: date.getDate(),         <span class="comment">// 日</span></span><br><span class="line">        <span class="string">'h+'</span>: date.getHours(),        <span class="comment">// 时</span></span><br><span class="line">        <span class="string">'i+'</span>: date.getMinutes(),      <span class="comment">// 分</span></span><br><span class="line">        <span class="string">'s+'</span>: date.getSeconds(),      <span class="comment">// 秒</span></span><br><span class="line">        <span class="string">'t+'</span>: date.getMilliseconds()  <span class="comment">// 毫秒</span></span><br><span class="line">    };</span><br><span class="line">    <span class="keyword">if</span> (<span class="regexp">/(y+)/</span>.test(format)) {</span><br><span class="line">        format = format.replace(<span class="built_in">RegExp</span>.$<span class="number">1</span>, (<span class="string">''</span> + date.getFullYear()).substr(<span class="number">4</span> - <span class="built_in">RegExp</span>.$<span class="number">1.</span>length));</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> key <span class="keyword">in</span> map) {</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">'('</span>+ key +<span class="string">')'</span>).test(format)){</span><br><span class="line">            format = format.replace(</span><br><span class="line">                <span class="built_in">RegExp</span>.$<span class="number">1</span>,</span><br><span class="line">                <span class="built_in">RegExp</span>.$<span class="number">1.</span>length === <span class="number">1</span> ? map[key] : (<span class="string">'00'</span>+ map[key]).substr((<span class="string">''</span>+ map[key]).length)</span><br><span class="line">            );</span><br><span class="line">         }</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">return</span> format;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<div class="tip success">
+    <h1>提示</h1>
+    <div class="content">
+        <p>format的格式实际上是根据对应时间类型的首字母，但是由于月（month）和分（minutes）以及毫秒（milliseconds）的首字母相同，因此format的参数可以自行定义，只要 map 中的对应字段获取对应的时间信息 API 即可。</p>
+    </div>
+</div>
+
+<p>把该方法复制到<code>console</code>里试验一下吧~<code>formatDateTime(new Date(), 'yyyy-mm-dd hh:ii:ss:tt')</code></p>
+<script>
         document.querySelectorAll('.github-emoji-test')
           .forEach(el => {
             if (!el.dataset.src) { return; }
@@ -303,14 +316,14 @@
 <div>
 <ul class="post-copyright">
   <li class="post-copyright-author">
-    <strong>本文标题： </strong>【vue实战系列第四篇】vuex-router源码分析
+    <strong>本文标题： </strong>【手写基础库系列】时间格式化
   </li>
   <li class="post-copyright-author">
     <strong>本文作者： </strong>Ifonlybean
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://ifonlybean.github.io/note/vue-router-origin/" title="【vue实战系列第四篇】vuex-router源码分析">https://ifonlybean.github.io/note/vue-router-origin/</a>
+    <a href="https://ifonlybean.github.io/note/utils-format-datetime/" title="【手写基础库系列】时间格式化">https://ifonlybean.github.io/note/utils-format-datetime/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -323,8 +336,8 @@
       <footer class="post-footer">
           
           <div class="post-tags">
-              <a href="/note/tags/vue/" rel="tag"><i class="fa fa-tag"></i> vue</a>
-              <a href="/note/tags/vuex/" rel="tag"><i class="fa fa-tag"></i> vuex</a>
+              <a href="/note/tags/js/" rel="tag"><i class="fa fa-tag"></i> js</a>
+              <a href="/note/tags/utils/" rel="tag"><i class="fa fa-tag"></i> utils</a>
           </div>
 
         
@@ -333,12 +346,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/note/vue-keep-alive/" rel="prev" title="【vue实战系列第三篇】keep-alive">
-      <i class="fa fa-chevron-left"></i> 【vue实战系列第三篇】keep-alive
+    <a href="/note/npm/" rel="prev" title="npm、npx、nrm、nvm">
+      <i class="fa fa-chevron-left"></i> npm、npx、nrm、nvm
     </a></div>
       <div class="post-nav-item">
-    <a href="/note/vuex-origin/" rel="next" title="【vue实战系列第五篇】vuex源码分析">
-      【vue实战系列第五篇】vuex源码分析 <i class="fa fa-chevron-right"></i>
+    <a href="/note/vue-define-reactive/" rel="next" title="【vue实战系列第一篇】vue数据响应式">
+      【vue实战系列第一篇】vue数据响应式 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -404,6 +417,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正文"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-number"></span> <span class="nav-text">提示</span></a></div>
       </div>
       <!--/noindex-->
 
