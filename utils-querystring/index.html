@@ -48,19 +48,19 @@
 
   <meta name="description" content="背景本系列主要在于整理一些项目中比较常用的功能，通常toC的产品在代码上的要求会比较高，一般考虑到代码大小、安全性、项目特点（例如只需要处理指定场景的case）、就喜欢自己写代码 😏 等方面都会自主开发一些常用的基础库，如果需要比较复杂的、兼容性等要求更高、toB等场景，还是建议使用npm依赖。以上只是我的一点点想法，轻拍😂 😂 😂">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【手写基础库系列】时间处理相关">
-<meta property="og:url" content="https://ifonlybean.github.io/note/utils-format-datetime/index.html">
+<meta property="og:title" content="【手写基础库系列】URL参数处理queryString">
+<meta property="og:url" content="https://ifonlybean.github.io/note/utils-querystring/index.html">
 <meta property="og:site_name" content="Ifonlybean">
 <meta property="og:description" content="背景本系列主要在于整理一些项目中比较常用的功能，通常toC的产品在代码上的要求会比较高，一般考虑到代码大小、安全性、项目特点（例如只需要处理指定场景的case）、就喜欢自己写代码 😏 等方面都会自主开发一些常用的基础库，如果需要比较复杂的、兼容性等要求更高、toB等场景，还是建议使用npm依赖。以上只是我的一点点想法，轻拍😂 😂 😂">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2019-03-31T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-07-27T08:36:31.431Z">
+<meta property="article:published_time" content="2019-04-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-07-27T09:28:24.657Z">
 <meta property="article:author" content="Ifonlybean">
 <meta property="article:tag" content="js">
 <meta property="article:tag" content="utils">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://ifonlybean.github.io/note/utils-format-datetime/">
+<link rel="canonical" href="https://ifonlybean.github.io/note/utils-querystring/">
 
 
 <script id="page-configurations">
@@ -72,7 +72,7 @@
   };
 </script>
 
-  <title>【手写基础库系列】时间处理相关 | Ifonlybean</title>
+  <title>【手写基础库系列】URL参数处理queryString | Ifonlybean</title>
   
 
 
@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ifonlybean.github.io/note/utils-format-datetime/">
+    <link itemprop="mainEntityOfPage" href="https://ifonlybean.github.io/note/utils-querystring/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/note/images/logo.jpg">
@@ -200,7 +200,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          【手写基础库系列】时间处理相关
+          【手写基础库系列】URL参数处理queryString
         </h2>
 
         <div class="post-meta">
@@ -210,7 +210,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-04-01 00:00:00" itemprop="dateCreated datePublished" datetime="2019-04-01T00:00:00+08:00">2019-04-01</time>
+              <time title="创建时间：2019-04-02 00:00:00" itemprop="dateCreated datePublished" datetime="2019-04-02T00:00:00+08:00">2019-04-02</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -237,14 +237,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.2k</span>
+              <span>1.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
+              <span>1 分钟</span>
             </span>
 
         </div>
@@ -259,18 +259,15 @@
         <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>本系列主要在于整理一些项目中比较常用的功能，通常<code>toC</code>的产品在代码上的要求会比较高，一般考虑到代码大小、安全性、项目特点（例如只需要处理指定场景的<code>case</code>）、就喜欢自己写代码 😏 等方面都会自主开发一些常用的基础库，如果需要比较复杂的、兼容性等要求更高、<code>toB</code>等场景，还是建议使用<code>npm</code>依赖。以上只是我的一点点想法，轻拍<span class="github-emoji-test" style="background-image:none !important;color:inherit !important;color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8">😂</span> <span class="github-emoji-test" style="background-image:none !important;color:inherit !important;color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8">😂</span> <span class="github-emoji-test" style="background-image:none !important;color:inherit !important;color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8">😂</span></p>
 <a id="more"></a>
 
-<h2 id="时间格式化"><a href="#时间格式化" class="headerlink" title="时间格式化"></a>时间格式化</h2><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 格式化日期时间</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param  <span class="type">{number}</span> </span>timestamp 待格式化的时间戳，单位毫秒</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param  <span class="type">{string}</span> </span>format    日期时间格式，如："yyyy/m/d h:i:s:t"，默认为 "yyyy/mm/dd"</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">{string}</span>           </span>格式化后的日期时间</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">formatTime</span>(<span class="params">timestamp, format = <span class="string">'yyyy/mm/dd'</span></span>) </span>{</span><br><span class="line">    <span class="comment">// 非"数字"特殊处理</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">isNaN</span>(timestamp)) {</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    }</span><br><span class="line">    format = format.toLowerCase();</span><br><span class="line">    <span class="keyword">let</span> date = <span class="keyword">new</span> <span class="built_in">Date</span>(timestamp);</span><br><span class="line">    <span class="keyword">let</span> map = {</span><br><span class="line">        <span class="string">'m+'</span>: date.getMonth() + <span class="number">1</span>,    <span class="comment">// 月</span></span><br><span class="line">        <span class="string">'d+'</span>: date.getDate(),         <span class="comment">// 日</span></span><br><span class="line">        <span class="string">'h+'</span>: date.getHours(),        <span class="comment">// 时</span></span><br><span class="line">        <span class="string">'i+'</span>: date.getMinutes(),      <span class="comment">// 分</span></span><br><span class="line">        <span class="string">'s+'</span>: date.getSeconds(),      <span class="comment">// 秒</span></span><br><span class="line">        <span class="string">'t+'</span>: date.getMilliseconds()  <span class="comment">// 毫秒</span></span><br><span class="line">    };</span><br><span class="line">    <span class="keyword">if</span> (<span class="regexp">/(y+)/</span>.test(format)) {</span><br><span class="line">        format = format.replace(<span class="built_in">RegExp</span>.$<span class="number">1</span>, (<span class="string">''</span> + date.getFullYear()).substr(<span class="number">4</span> - <span class="built_in">RegExp</span>.$<span class="number">1.</span>length));</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> key <span class="keyword">in</span> map) {</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">'('</span>+ key +<span class="string">')'</span>).test(format)){</span><br><span class="line">            format = format.replace(</span><br><span class="line">                <span class="built_in">RegExp</span>.$<span class="number">1</span>,</span><br><span class="line">                <span class="built_in">RegExp</span>.$<span class="number">1.</span>length === <span class="number">1</span> ? map[key] : (<span class="string">'00'</span>+ map[key]).substr((<span class="string">''</span>+ map[key]).length)</span><br><span class="line">            );</span><br><span class="line">         }</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">return</span> format;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="querystring-js"><a href="#querystring-js" class="headerlink" title="querystring.js"></a>querystring.js</h2><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">parse</span>(<span class="params">str = location.search, options</span>) </span>{</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> str !== <span class="string">'string'</span>) <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">    str = str.trim().replace(<span class="regexp">/^[?#&amp;]/</span>, <span class="string">''</span>);</span><br><span class="line">    <span class="keyword">if</span> (!str) <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> query = {};</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">window</span>.URLSearchParams) {</span><br><span class="line">        <span class="keyword">let</span> obj = <span class="keyword">new</span> URLSearchParams(str)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> item <span class="keyword">of</span> obj) {</span><br><span class="line">            query[item[<span class="number">0</span>]] = <span class="built_in">decodeURIComponent</span>(item[<span class="number">1</span>]) || <span class="literal">null</span>;</span><br><span class="line">        };</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">else</span> {</span><br><span class="line">        str.split(<span class="string">'&amp;'</span>).forEach(<span class="function"><span class="params">list</span> =&gt;</span> {</span><br><span class="line">            <span class="keyword">let</span> item = list.replace(<span class="regexp">/\+/g</span>, <span class="string">' '</span>).split(<span class="string">'='</span>);</span><br><span class="line">            query[item[<span class="number">0</span>]] = item[<span class="number">1</span>] === <span class="literal">undefined</span> ? <span class="literal">null</span> : <span class="built_in">decodeURIComponent</span>(item[<span class="number">1</span>]);</span><br><span class="line">        })</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">return</span> query;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">stringify</span>(<span class="params">obj</span>) </span>{</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Object</span>.prototype.toString.call(obj) !== <span class="string">'[object Object]'</span>) <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">    <span class="keyword">let</span> str = [];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> item <span class="keyword">in</span> obj) {</span><br><span class="line">        str.push(item + <span class="string">'='</span> + (obj[item] || <span class="string">''</span>));</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">return</span> str.join(<span class="string">'&amp;'</span>);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">exports.parse = parse;</span><br><span class="line">exports.stringify = stringify;</span><br></pre></td></tr></tbody></table></figure>
+<p>使用方式：</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> queryString <span class="keyword">from</span> <span class="string">'./querystring.js'</span>;</span><br><span class="line">queryString.parse(<span class="string">'a=11111&amp;a=99&amp;b=&amp;b=0&amp;c=你好&amp;d&amp;e=89'</span>);</span><br><span class="line"><span class="comment">// {a: "99", b: "0", c: "你好", d: null, e: "89"}</span></span><br><span class="line">queryString.stringify({</span><br><span class="line">    name: <span class="string">'Tom'</span>,</span><br><span class="line">    age: <span class="number">20</span>,</span><br><span class="line">    color: <span class="literal">null</span>,</span><br><span class="line">    height: <span class="literal">undefined</span></span><br><span class="line">});</span><br><span class="line"><span class="comment">// name=Tom&amp;age=20&amp;color=&amp;height=</span></span><br></pre></td></tr></tbody></table></figure>
+
 <blockquote>
-<p>提示：format 的格式实际上是根据对应时间类型的首字母，但是由于月（month）和分（minutes）以及毫秒（milliseconds）的首字母相同，因此 format 的参数可以自行定义，只要 map 中的对应字段获取对应的时间信息 API 即可。</p>
+<p>说明：关于<code>querystring</code>的库非常多，他们支持扩展方式比较多，但是通常我们都不会用到，同时由于<code>window.URLSearchParams</code>除了 IE 不支持，其他的浏览器基本都是支持的，因此我们也可以根据自己项目的具体场景进行代码处理，从而减少冗余代码。</p>
 </blockquote>
-<p>把该方法复制到<code>console</code>里试验一下吧~ <code>formatTime(new Date(), 'yyyy-mm-dd hh:ii:ss:tt')</code> 、<code>formatTime(new Date(), 'yyyy年mm月dd日 hh时ii分ss秒')</code></p>
-<h2 id="获取指定日期周一到周日的时间（默认本周）"><a href="#获取指定日期周一到周日的时间（默认本周）" class="headerlink" title="获取指定日期周一到周日的时间（默认本周）"></a>获取指定日期周一到周日的时间（默认本周）</h2><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 格式化日期时间</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param  <span class="type">{number}</span> </span>num       星期几，数字1-7分别代表星期一到星期天</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">{string}</span>           </span>格式化后的日期时间</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getWeekDay</span>(<span class="params">num = <span class="number">1</span>, timestamp = <span class="string">''</span></span>) </span>{</span><br><span class="line">    <span class="keyword">if</span> (num &lt; <span class="number">0</span> || num &gt; <span class="number">7</span>) {</span><br><span class="line">        <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">let</span> now = timestamp ? <span class="keyword">new</span> <span class="built_in">Date</span>(timestamp) : <span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">    <span class="keyword">let</span> nowDayOfWeek = now.getDay();     <span class="comment">// 今天本周的第几天，0是星期天</span></span><br><span class="line">    nowDayOfWeek === <span class="number">0</span> &amp;&amp; (nowDayOfWeek = <span class="number">7</span>);</span><br><span class="line">    <span class="keyword">let</span> nowDay = now.getDate();          <span class="comment">// 当前日</span></span><br><span class="line">    <span class="keyword">let</span> nowMonth = now.getMonth();       <span class="comment">// 当前月</span></span><br><span class="line">    <span class="keyword">let</span> nowYear = now.getFullYear();     <span class="comment">// 当前年</span></span><br><span class="line">    <span class="keyword">let</span> weekNumDate = <span class="keyword">new</span> <span class="built_in">Date</span>(nowYear, nowMonth, nowDay - nowDayOfWeek + num);</span><br><span class="line">    <span class="keyword">return</span> formatTime(weekNumDate);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-<p>把该方法复制到<code>console</code>里试验一下吧~ <code>getWeekDay(1)</code> 、<code>getWeekDay(2, '2020-01-01')</code></p>
-<h2 id="推荐-时间处理库"><a href="#推荐-时间处理库" class="headerlink" title="推荐-时间处理库"></a>推荐-时间处理库</h2><ol>
-<li><p><a class="if-link" target="_blank" href="https://momentjs.com/">momentjs官网</a> | <a class="if-link" target="_blank" href="http://momentjs.cn/">momentjs中文官网</a><br> <code>momentjs</code>的功能非常强大，函数丰富，同时支持国际化（缺点：如果不需要国际化需要手动处理不需要的多国语言，否则会都打包到产出里）。</p>
-</li>
-<li><p><a class="if-link" target="_blank" href="https://day.js.org/">dayjs官网</a><br> <code>Day.js</code>是一个轻量的处理时间和日期的<code>JavaScript</code>库，只有2KB，和<code>Moment.js</code>的<code>API</code>设计保持完全一样。<code>Day.js</code> 对国际化支持良好。但除非手动加载，多国语言默认是不会被打包到工程里的。</p>
-</li>
+<h2 id="推荐-querystring库"><a href="#推荐-querystring库" class="headerlink" title="推荐-querystring库"></a>推荐-querystring库</h2><ol>
+<li><a class="if-link" target="_blank" href="https://github.com/sindresorhus/query-string">query-string[4.9K star]</a> | <a class="if-link" target="_blank" href="https://github.com/Gozala/querystring">querystring[242 star]</a> | <a class="if-link" target="_blank" href="https://github.com/unshiftio/querystringify">querystringify[137 star]</a></li>
 </ol>
 <script>
         document.querySelectorAll('.github-emoji-test')
@@ -321,14 +318,14 @@
 <div>
 <ul class="post-copyright">
   <li class="post-copyright-author">
-    <strong>本文标题： </strong>【手写基础库系列】时间处理相关
+    <strong>本文标题： </strong>【手写基础库系列】URL参数处理queryString
   </li>
   <li class="post-copyright-author">
     <strong>本文作者： </strong>Ifonlybean
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://ifonlybean.github.io/note/utils-format-datetime/" title="【手写基础库系列】时间处理相关">https://ifonlybean.github.io/note/utils-format-datetime/</a>
+    <a href="https://ifonlybean.github.io/note/utils-querystring/" title="【手写基础库系列】URL参数处理queryString">https://ifonlybean.github.io/note/utils-querystring/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -351,12 +348,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/note/npm/" rel="prev" title="npm、npx、nrm、nvm">
-      <i class="fa fa-chevron-left"></i> npm、npx、nrm、nvm
+    <a href="/note/utils-format-datetime/" rel="prev" title="【手写基础库系列】时间处理相关">
+      <i class="fa fa-chevron-left"></i> 【手写基础库系列】时间处理相关
     </a></div>
       <div class="post-nav-item">
-    <a href="/note/utils-querystring/" rel="next" title="【手写基础库系列】URL参数处理queryString">
-      【手写基础库系列】URL参数处理queryString <i class="fa fa-chevron-right"></i>
+    <a href="/note/vue-define-reactive/" rel="next" title="【vue实战系列第一篇】vue数据响应式">
+      【vue实战系列第一篇】vue数据响应式 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -422,7 +419,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#时间格式化"><span class="nav-number">2.</span> <span class="nav-text">时间格式化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取指定日期周一到周日的时间（默认本周）"><span class="nav-number">3.</span> <span class="nav-text">获取指定日期周一到周日的时间（默认本周）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推荐-时间处理库"><span class="nav-number">4.</span> <span class="nav-text">推荐-时间处理库</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#querystring-js"><span class="nav-number">2.</span> <span class="nav-text">querystring.js</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推荐-querystring库"><span class="nav-number">3.</span> <span class="nav-text">推荐-querystring库</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
