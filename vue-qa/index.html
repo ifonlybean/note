@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 6.2.0">
   <link rel="icon" type="image/png" sizes="32x32" href="/note/images/favicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/note/images/favicon.png">
 
@@ -257,12 +257,12 @@
 
       
         <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>本篇文章主要介绍了<code>vue</code>面试中常考的一些问题</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="计时器"><a href="#计时器" class="headerlink" title="计时器"></a>计时器</h2><p><strong>问题：</strong>页面中有一个计时器，在哪个阶段清除？</p>
 <p><strong>方案一：</strong>在<code>beforeDestroy</code>中销毁计时器；</p>
-<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mounted(){</span><br><span class="line">    <span class="keyword">this</span>.timer = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> {</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">1</span>)</span><br><span class="line">    },<span class="number">1000</span>)</span><br><span class="line">},</span><br><span class="line">beforeDestroy(){</span><br><span class="line">    clearInterval(<span class="keyword">this</span>.timer)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>分析</strong>：该方法存在两个潜在问题（<a href="https://cn.vuejs.org/v2/guide/components-edge-cases.html#%E7%A8%8B%E5%BA%8F%E5%8C%96%E7%9A%84%E4%BA%8B%E4%BB%B6%E4%BE%A6%E5%90%AC%E5%99%A8" target="_blank" rel="noopener">参考vue官方文档</a>）：</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">mounted</span>(<span class="params"></span>){</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">timer</span> = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> {</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">1</span>)</span><br><span class="line">    },<span class="number">1000</span>)</span><br><span class="line">},</span><br><span class="line"><span class="title function_">beforeDestroy</span>(<span class="params"></span>){</span><br><span class="line">    <span class="built_in">clearInterval</span>(<span class="variable language_">this</span>.<span class="property">timer</span>)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>分析</strong>：该方法存在两个潜在问题（<a target="_blank" rel="noopener" href="https://cn.vuejs.org/v2/guide/components-edge-cases.html#%E7%A8%8B%E5%BA%8F%E5%8C%96%E7%9A%84%E4%BA%8B%E4%BB%B6%E4%BE%A6%E5%90%AC%E5%99%A8">参考vue官方文档</a>）：</p>
 <ul>
 <li><p>需要在这个组件实例中保存这个<code>timer</code>，如果可以的话最好只有生命周期钩子可以访问到它。这并不算严重的问题，但是它可以被视为杂物。</p>
 </li>
@@ -270,7 +270,7 @@
 </li>
 </ul>
 <p><strong>方案二：</strong>通过<code>$once</code>这个事件侦听器在定时器定义之后来清除定时器；</p>
-<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mounted(){</span><br><span class="line">    <span class="keyword">const</span> timer = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> {</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">1</span>)</span><br><span class="line">    },<span class="number">1000</span>)</span><br><span class="line">    <span class="keyword">this</span>.$once(<span class="string">'hook:beforeDestroy'</span>,() =&gt; {</span><br><span class="line">        clearInterval(timer)</span><br><span class="line">    })</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">mounted</span>(<span class="params"></span>){</span><br><span class="line">    <span class="keyword">const</span> timer = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> {</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">1</span>)</span><br><span class="line">    },<span class="number">1000</span>)</span><br><span class="line">    <span class="variable language_">this</span>.$once(<span class="string">'hook:beforeDestroy'</span>,<span class="function">() =&gt;</span> {</span><br><span class="line">        <span class="built_in">clearInterval</span>(timer)</span><br><span class="line">    })</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 <h2 id="computed和watch的区别？"><a href="#computed和watch的区别？" class="headerlink" title="computed和watch的区别？"></a>computed和watch的区别？</h2><p><strong><code>computed</code>：</strong></p>
 <ul>
@@ -287,7 +287,7 @@
 <li><code>watch</code>支持配置<code>handler</code>、<code>deep</code>、<code>immeditate</code>；</li>
 </ul>
 <p>示例：</p>
-<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">watch: {</span><br><span class="line">    name: {</span><br><span class="line">        handler(newVal, oldVal) {</span><br><span class="line">            <span class="built_in">console</span>.log(newVal, oldVal);</span><br><span class="line">        },</span><br><span class="line">        deep: <span class="literal">true</span>,      <span class="comment">// 是否深度遍历，默认否</span></span><br><span class="line">        immediate: <span class="literal">true</span>  <span class="comment">// 是否立即执行，默认否</span></span><br><span class="line">    }</span><br><span class="line">},</span><br><span class="line">computed: {</span><br><span class="line">    fullName() {</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'这是name的值:'</span> + <span class="keyword">this</span>.name;</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">watch</span>: {</span><br><span class="line">    <span class="attr">name</span>: {</span><br><span class="line">        <span class="title function_">handler</span>(<span class="params">newVal, oldVal</span>) {</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(newVal, oldVal);</span><br><span class="line">        },</span><br><span class="line">        <span class="attr">deep</span>: <span class="literal">true</span>,      <span class="comment">// 是否深度遍历，默认否</span></span><br><span class="line">        <span class="attr">immediate</span>: <span class="literal">true</span>  <span class="comment">// 是否立即执行，默认否</span></span><br><span class="line">    }</span><br><span class="line">},</span><br><span class="line"><span class="attr">computed</span>: {</span><br><span class="line">    <span class="title function_">fullName</span>(<span class="params"></span>) {</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'这是name的值:'</span> + <span class="variable language_">this</span>.<span class="property">name</span>;</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 <p><strong>总结：</strong></p>
 <ul>
@@ -311,7 +311,7 @@
 </li>
 </ul>
 <p>PS：该方式<code>doSomething</code>会执行两遍；</p>
-<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://zhuanlan.zhihu.com/p/103763164" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/103763164</a></p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/103763164">https://zhuanlan.zhihu.com/p/103763164</a></p>
 <script>
         document.querySelectorAll('.github-emoji-test')
           .forEach(el => {
@@ -462,7 +462,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计时器"><span class="nav-number">2.</span> <span class="nav-text">计时器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#computed和watch的区别？"><span class="nav-number">3.</span> <span class="nav-text">computed和watch的区别？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vue的父组件和子组件生命周期钩子函数执行顺序？"><span class="nav-number">4.</span> <span class="nav-text">Vue的父组件和子组件生命周期钩子函数执行顺序？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#父组件监听子组件的生命周期如何实现？"><span class="nav-number">5.</span> <span class="nav-text">父组件监听子组件的生命周期如何实现？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E6%97%B6%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">计时器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#computed%E5%92%8Cwatch%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">computed和watch的区别？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vue%E7%9A%84%E7%88%B6%E7%BB%84%E4%BB%B6%E5%92%8C%E5%AD%90%E7%BB%84%E4%BB%B6%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E9%92%A9%E5%AD%90%E5%87%BD%E6%95%B0%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F%EF%BC%9F"><span class="nav-number">4.</span> <span class="nav-text">Vue的父组件和子组件生命周期钩子函数执行顺序？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%88%B6%E7%BB%84%E4%BB%B6%E7%9B%91%E5%90%AC%E5%AD%90%E7%BB%84%E4%BB%B6%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%EF%BC%9F"><span class="nav-number">5.</span> <span class="nav-text">父组件监听子组件的生命周期如何实现？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -471,7 +471,7 @@
   <nav class="site-state">
     <div class="site-state-item site-state-categories">
       <p class="site-state-item-name">分类</p>
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/note/categories/%E5%BB%BA%E7%AB%99/">建站</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/note/categories/Node/">Node</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/note/categories/JS%E5%9F%BA%E7%A1%80%E5%BA%93/">JS基础库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/note/categories/React/">React</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/note/categories/Vue/">Vue</a><span class="category-list-count">7</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/note/categories/%E5%BB%BA%E7%AB%99/">建站</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/note/categories/Node/">Node</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/note/categories/React/">React</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/note/categories/JS%E5%9F%BA%E7%A1%80%E5%BA%93/">JS基础库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/note/categories/Vue/">Vue</a><span class="category-list-count">7</span></li></ul>
     </div>
     <div class="site-state-item site-state-tags">
       <p class="site-state-item-name">标签</p>
@@ -507,7 +507,7 @@
         <div class="copyright">
   
   &copy; 2018 – 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
